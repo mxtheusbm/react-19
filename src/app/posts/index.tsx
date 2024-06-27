@@ -1,6 +1,4 @@
-'use client'
 import axios from "axios";
-import Image from "next/image";
 import { use } from "react";
 
 interface Post {
@@ -8,6 +6,10 @@ interface Post {
   cover?: string;
   id: number;
   title: string;
+}
+
+type PostProps = {
+  searchValue: string;
 }
 
 const getPosts = async () => {
@@ -26,12 +28,14 @@ const getPosts = async () => {
   return postsAndPhotos;
 }
 
-export const Posts = () => {
+export const Posts = ({ searchValue }: PostProps) => {
   const posts = use(getPosts())
+
+  const filteredPosts = posts.filter(post => post.title.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()))
 
   return (
     <ul className="grid grid-cols-3 gap-8">
-      {posts.map(post => (
+      {filteredPosts.map(post => (
         <li key={post.id} className="w-96 shadow-lg">
           <img src={post.cover} alt={post.title} />
           <div className="post-content p-6">
